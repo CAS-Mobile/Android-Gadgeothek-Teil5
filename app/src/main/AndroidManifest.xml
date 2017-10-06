@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ch.hsr.mge.gadgeothek">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme"
+        android:name=".modules.GadgeothekApplication">
+        <activity
+            android:name=".ui.GadgeothekActivity"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".ui.LoginActivity"
+            android:label="@string/title_activity_login"/>
+        <activity
+            android:name=".ui.RegisterActivity"
+            android:label="@string/title_activity_register" />
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".ui.GadgeothekActivity" />
+        <activity
+            android:name=".ui.reservations.NewReservationActivity"
+            android:label="@string/title_activity_new_reservation"
+            android:parentActivityName=".ui.GadgeothekActivity"/>
+        <activity
+            android:name=".ui.SplashActivity"
+            android:label="@string/title_activity_splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
