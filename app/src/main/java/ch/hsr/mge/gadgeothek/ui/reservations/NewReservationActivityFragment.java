@@ -3,6 +3,7 @@ package ch.hsr.mge.gadgeothek.ui.reservations;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
@@ -20,20 +21,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import ch.hsr.mge.gadgeothek.R;
 import ch.hsr.mge.gadgeothek.domain.Gadget;
 import ch.hsr.mge.gadgeothek.domain.Reservation;
+import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 
 public class NewReservationActivityFragment extends Fragment implements NewReservationsArrayAdapter.OnSelectionChangedListener {
 
+    @Inject
+    LibraryService libraryService;
     private static final String TAG = NewReservationActivityFragment.class.getSimpleName();
-    private static final int MAX_RESERVATIONS = 3;
     private ArrayList<Gadget> gadgetList = new ArrayList<>();
     private NewReservationsArrayAdapter dataAdapter;
     private ActionMode actionMode;
     private View layout;
+    private static final int MAX_RESERVATIONS = 3;
     private int numberOfReservationsLeft;
 
     @Override
@@ -43,26 +49,18 @@ public class NewReservationActivityFragment extends Fragment implements NewReser
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((GadgeothekApplication) getActivity().getApplication()).getComponent().inject(this);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        layout = inflater.inflate(R.layout.new_reservation_fragment, container, false);
-
-        dataAdapter = new NewReservationsArrayAdapter(getActivity(), R.layout.reservation_recycler_item, gadgetList, this);
-
-        final ListView listView = (ListView) layout.findViewById(R.id.listView);
-        listView.setAdapter(dataAdapter);
-        listView.setTextFilterEnabled(true);
-        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
-        LibraryService.getGadgets(new Callback<List<Gadget>>() {
+    public void onStart() {
+        super.onStart();
+        libraryService.getGadgets(new Callback<List<Gadget>>() {
             @Override
             public void onCompletion(final List<Gadget> allAvailableGadgets) {
-                LibraryService.getReservationsForCustomer(new Callback<List<Reservation>>() {
+                libraryService.getReservationsForCustomer(new Callback<List<Reservation>>() {
                     @Override
                     public void onCompletion(List<Reservation> alreadyReserved) {
                         gadgetList.clear();
@@ -86,6 +84,19 @@ public class NewReservationActivityFragment extends Fragment implements NewReser
                 snack("Oops, could not get a list of available gadgets: " + message);
             }
         });
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        layout = inflater.inflate(R.layout.new_reservation_fragment, container, false);
+
+        dataAdapter = new NewReservationsArrayAdapter(getActivity(), R.layout.reservation_recycler_item, gadgetList, this);
+
+        final ListView listView = layout.findViewById(R.id.listView);
+        listView.setAdapter(dataAdapter);
+        listView.setTextFilterEnabled(true);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
         return layout;
     }
@@ -118,7 +129,7 @@ public class NewReservationActivityFragment extends Fragment implements NewReser
     public void onSelectionChanged(final ArrayList<Gadget> selected) {
 
         final String actionTitle;
-        if (selected.size() <= numberOfReservationsLeft) {
+        if(selected.size() <= numberOfReservationsLeft) {
             actionTitle = "Reserve " + selected.size() + " Gadgets";
         } else {
             actionTitle = "Please select no more than " + numberOfReservationsLeft + " Gadgets";
@@ -171,7 +182,7 @@ public class NewReservationActivityFragment extends Fragment implements NewReser
         final List<Gadget> gadgets = Collections.synchronizedList(new ArrayList<>(dataAdapter.getSelectedGadgets()));
 
         for (final Gadget gadget : gadgets) {
-            LibraryService.reserveGadget(gadget, new Callback<Boolean>() {
+            libraryService.reserveGadget(gadget, new Callback<Boolean>() {
                 @Override
                 public void onCompletion(Boolean success) {
                     gadgets.remove(gadget);

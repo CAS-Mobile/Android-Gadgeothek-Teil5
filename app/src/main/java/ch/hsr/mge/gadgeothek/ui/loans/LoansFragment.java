@@ -2,6 +2,7 @@ package ch.hsr.mge.gadgeothek.ui.loans;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,36 +16,49 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ch.hsr.mge.gadgeothek.R;
 import ch.hsr.mge.gadgeothek.domain.Loan;
+import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 import ch.hsr.mge.gadgeothek.ui.GadgeothekActivity;
 
 public class LoansFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    LibraryService libraryService;
+
+    @BindView(R.id.swipeLayout)
+    SwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+
     private ArrayList<Loan> loans = new ArrayList<>();
-    private SwipeRefreshLayout refreshLayout;
     private LoansRecyclerAdapter loansRecyclerAdapter;
-    private RecyclerView recyclerView;
+
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((GadgeothekApplication) getActivity().getApplication()).getComponent().inject(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View fragment = inflater.inflate(R.layout.loans_fragment, container, false);
-        recyclerView = (RecyclerView) fragment.findViewById(R.id.recyclerView);
-
-        refreshLayout = (SwipeRefreshLayout) fragment.findViewById(R.id.swipeLayout);
+        View view = inflater.inflate(R.layout.loans_fragment, container, false);
+        ButterKnife.bind(this, view);
         refreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW);
         refreshLayout.setOnRefreshListener(this);
-
-        return fragment;
+        return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        if (LibraryService.isLoggedIn()) {
+        if (libraryService.isLoggedIn()) {
             refreshLoans();
         } else {
             snack("You are not logged in!?");
@@ -57,7 +71,7 @@ public class LoansFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private void refreshLoans() {
         refreshLayout.setRefreshing(true);
-        LibraryService.getLoansForCustomer(new Callback<List<Loan>>() {
+        libraryService.getLoansForCustomer(new Callback<List<Loan>>() {
             @Override
             public void onCompletion(List<Loan> newLoans) {
                 setupAdapter();
@@ -96,5 +110,4 @@ public class LoansFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         }).show();
     }
-
 }

@@ -18,7 +18,12 @@ import android.view.View;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ch.hsr.mge.gadgeothek.R;
+import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 import ch.hsr.mge.gadgeothek.ui.loans.LoansFragment;
@@ -28,9 +33,18 @@ import ch.hsr.mge.gadgeothek.ui.reservations.ReservationsFragment;
 public class GadgeothekActivity extends AppCompatActivity {
 
     private static final String ACTIVE_TAB = GadgeothekActivity.class.getCanonicalName() + ".ACTIVE_TAB";
-    private Toolbar toolbar;
-    private FloatingActionButton fab;
-    private ViewPager viewPager;
+
+    @Inject
+    LibraryService libraryService;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
 
     public static DateFormat getDateFormat(Context ctx) {
         final String format = Settings.System.getString(ctx.getContentResolver(), Settings.System.DATE_FORMAT);
@@ -45,14 +59,13 @@ public class GadgeothekActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gadgeothek);
+        ((GadgeothekApplication) getApplication()).getComponent().inject(this);
+        ButterKnife.bind(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide(); // hidden on the first view page
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new LoansFragment(), getString(R.string.tab_loans));
         adapter.addFragment(new ReservationsFragment(), getString(R.string.tab_reservations));
@@ -101,7 +114,7 @@ public class GadgeothekActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                LibraryService.logout(new Callback<Boolean>() {
+                libraryService.logout(new Callback<Boolean>() {
                     @Override
                     public void onCompletion(Boolean input) {
                         SharedPreferences preferences = getSharedPreferences(AbstractAuthenticationActivity.PREFERENCES, MODE_PRIVATE);

@@ -8,26 +8,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.inject.Singleton;
+
 import ch.hsr.mge.gadgeothek.domain.Gadget;
 import ch.hsr.mge.gadgeothek.domain.Loan;
 import ch.hsr.mge.gadgeothek.domain.Reservation;
 
+@Singleton
 public class LibraryService {
 
     private static final String TAG = LibraryService.class.getSimpleName();
-    private static LoginToken token;
-    private static String serverUrl;
+    private LoginToken token;
+    private String serverUrl;
 
-    public static void setServerAddress(String address) {
+    public void setServerAddress(String address) {
         Log.d(TAG, "Setting server to " + address);
         serverUrl = address;
     }
 
-    public static boolean isLoggedIn() {
+    public boolean isLoggedIn() {
         return token != null;
     }
 
-    public static void login(String mail, String password, final Callback<Boolean> callback) {
+    public void login(String mail, String password, final Callback<Boolean> callback) {
         checkServerUrlSet();
         HashMap<String, String> parameter = new HashMap<>();
         parameter.put("email", mail);
@@ -47,7 +50,7 @@ public class LibraryService {
         request.execute();
     }
 
-    public static void logout(final Callback<Boolean> callback) {
+    public void logout(final Callback<Boolean> callback) {
         checkServerUrlSet();
         HashMap<String, String> headers = getAuthHeaders();
 
@@ -69,7 +72,7 @@ public class LibraryService {
         request.execute();
     }
 
-    public static void register(String mail, String password, String name, String studentenNumber, final Callback<Boolean> callback) {
+    public void register(String mail, String password, String name, String studentenNumber, final Callback<Boolean> callback) {
         checkServerUrlSet();
         HashMap<String, String> parameter = new HashMap<>();
         parameter.put("email", mail);
@@ -91,8 +94,7 @@ public class LibraryService {
         request.execute();
     }
 
-
-    public static void getLoansForCustomer(final Callback<List<Loan>> callback) {
+    public void getLoansForCustomer(final Callback<List<Loan>> callback) {
         checkServerUrlSet();
         checkLoggedIn();
         HashMap<String, String> headers = getAuthHeaders();
@@ -112,7 +114,7 @@ public class LibraryService {
         request.execute();
     }
 
-    public static void getReservationsForCustomer(final Callback<List<Reservation>> callback) {
+    public void getReservationsForCustomer(final Callback<List<Reservation>> callback) {
         checkServerUrlSet();
         checkLoggedIn();
         HashMap<String, String> headers = getAuthHeaders();
@@ -132,8 +134,7 @@ public class LibraryService {
         request.execute();
     }
 
-
-    public static void reserveGadget(Gadget toReserve, final Callback<Boolean> callback) {
+    public void reserveGadget(Gadget toReserve, final Callback<Boolean> callback) {
         checkServerUrlSet();
         checkLoggedIn();
         HashMap<String, String> headers = getAuthHeaders();
@@ -156,8 +157,7 @@ public class LibraryService {
         request.execute();
     }
 
-
-    public static void deleteReservation(Reservation toDelete, final Callback<Boolean> callback) {
+    public void deleteReservation(Reservation toDelete, final Callback<Boolean> callback) {
         checkServerUrlSet();
         checkLoggedIn();
         HashMap<String, String> headers = getAuthHeaders();
@@ -179,7 +179,7 @@ public class LibraryService {
         request.execute();
     }
 
-    public static void getGadgets(final Callback<List<Gadget>> callback) {
+    public void getGadgets(final Callback<List<Gadget>> callback) {
         checkServerUrlSet();
         checkLoggedIn();
         HashMap<String, String> headers = getAuthHeaders();
@@ -199,20 +199,20 @@ public class LibraryService {
         request.execute();
     }
 
-    private static HashMap<String, String> getAuthHeaders() {
+    private HashMap<String, String> getAuthHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("x-security-token", token.getSecurityToken());
         headers.put("x-customer-id", token.getCustomerId());
         return headers;
     }
 
-    private static void checkServerUrlSet() {
+    private void checkServerUrlSet() {
         if(serverUrl == null) {
             throw new IllegalStateException("No server address is set, call setServerAddress before using this method.");
         }
     }
 
-    private static void checkLoggedIn() {
+    private void checkLoggedIn() {
         if (token == null) {
             throw new IllegalStateException("Not logged in, call login before using this method.");
         }

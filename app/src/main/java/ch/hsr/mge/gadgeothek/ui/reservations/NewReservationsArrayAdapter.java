@@ -1,13 +1,12 @@
 package ch.hsr.mge.gadgeothek.ui.reservations;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +23,7 @@ class NewReservationsArrayAdapter extends ArrayAdapter<Gadget> {
     private final ArrayList<Gadget> selectedGadgetList;
     private OnSelectionChangedListener onSelectionChangedListener;
 
-
-    interface OnSelectionChangedListener {
-        void onSelectionChanged(ArrayList<Gadget> selected);
-    }
-
-    public NewReservationsArrayAdapter(Context context, int textViewResourceId, ArrayList<Gadget> gadgets, OnSelectionChangedListener onSelectionChangedListener) {
+    NewReservationsArrayAdapter(Context context, int textViewResourceId, ArrayList<Gadget> gadgets, OnSelectionChangedListener onSelectionChangedListener) {
         super(context, textViewResourceId, gadgets);
         this.onSelectionChangedListener = onSelectionChangedListener;
         this.originalGadgetList = new ArrayList<>();
@@ -39,6 +33,7 @@ class NewReservationsArrayAdapter extends ArrayAdapter<Gadget> {
         this.filteredGadgetList.addAll(gadgets);
     }
 
+    @NonNull
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -74,21 +69,17 @@ class NewReservationsArrayAdapter extends ArrayAdapter<Gadget> {
         };
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater)
                     getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.gadget_listview_item, null);
 
-            TextView nameTextView = (TextView) convertView.findViewById(R.id.primaryTextView);
-            TextView lentUntilDateTextView = (TextView) convertView.findViewById(R.id.secondaryTextView);
-            ImageView iconImageView = (ImageView) convertView.findViewById(R.id.iconImageView);
-
             ReservationsRecyclerAdapter.RecyclerItemViewHolder holder =
-                    new ReservationsRecyclerAdapter.RecyclerItemViewHolder(
-                            convertView, nameTextView, lentUntilDateTextView, iconImageView);
+                    new ReservationsRecyclerAdapter.RecyclerItemViewHolder(convertView);
 
             convertView.setTag(holder);
         }
@@ -102,12 +93,6 @@ class NewReservationsArrayAdapter extends ArrayAdapter<Gadget> {
         holder.nameTextView.setText(gadget.getName());
         holder.lentUntilDateTextView.setText("Lent until ???");
         holder.iconImageView.setImageDrawable(ImageProvider.getIconFor(gadget));
-/*
-        if (selectedGadgetList.contains(gadget)) {
-            layout.setChecked(true);
-        } else {
-            layout.setChecked(false);
-        }*/
 
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,12 +118,16 @@ class NewReservationsArrayAdapter extends ArrayAdapter<Gadget> {
         notifyDataSetChanged();
     }
 
-    public void clearSelection() {
+    void clearSelection() {
         selectedGadgetList.clear();
         notifyDataSetChanged();
     }
 
-    public ArrayList<Gadget> getSelectedGadgets() {
+    ArrayList<Gadget> getSelectedGadgets() {
         return selectedGadgetList;
+    }
+
+    interface OnSelectionChangedListener {
+        void onSelectionChanged(ArrayList<Gadget> selected);
     }
 }

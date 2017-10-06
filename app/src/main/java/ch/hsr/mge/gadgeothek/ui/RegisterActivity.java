@@ -4,46 +4,51 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ch.hsr.mge.gadgeothek.R;
+import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 
 public class RegisterActivity extends AbstractAuthenticationActivity {
 
-    private EditText emailEditText;
-    private EditText passwordEditText;
-    private EditText nameEditText;
-    private EditText matrikelNrEditText;
-    private View progressView;
-    private View loginFormView;
+    @Inject
+    LibraryService libraryService;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.email)
+    EditText emailEditText;
+
+    @BindView(R.id.password)
+    EditText passwordEditText;
+
+    @BindView(R.id.name)
+    EditText nameEditText;
+
+    @BindView(R.id.matrikelnr)
+    EditText matrikelNrEditText;
+
+    @BindView(R.id.login_progress)
+    View progressView;
+
+    @BindView(R.id.login_form)
+    View loginFormView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ((GadgeothekApplication) getApplication()).getComponent().inject(this);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
-        // Set up the login form.
-        emailEditText = (EditText) findViewById(R.id.email);
-        nameEditText = (EditText) findViewById(R.id.name);
-        matrikelNrEditText = (EditText) findViewById(R.id.matrikelnr);
-        passwordEditText = (EditText) findViewById(R.id.password);
-
-        ((Button) findViewById(R.id.registerButton)).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
-
-        loginFormView = findViewById(R.id.login_form);
-        progressView = findViewById(R.id.login_progress);
     }
 
     /**
@@ -51,6 +56,7 @@ public class RegisterActivity extends AbstractAuthenticationActivity {
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
+    @OnClick(R.id.registerButton)
     public void attemptLogin() {
 
         // Reset errors.
@@ -102,12 +108,12 @@ public class RegisterActivity extends AbstractAuthenticationActivity {
             showProgress(loginFormView, progressView, true);
             hideSoftKeyboard(loginFormView);
 
-            LibraryService.register(email, password, name, matrikelNr, new Callback<Boolean>() {
+            libraryService.register(email, password, name, matrikelNr, new Callback<Boolean>() {
                 @Override
                 public void onCompletion(Boolean success) {
                     showProgress(loginFormView, progressView, false);
                     if (success) {
-                        LibraryService.login(email, password, new Callback<Boolean>() {
+                        libraryService.login(email, password, new Callback<Boolean>() {
                             @Override
                             public void onCompletion(Boolean success) {
                                 startMainActivity(/* isAutoLogin = */false);

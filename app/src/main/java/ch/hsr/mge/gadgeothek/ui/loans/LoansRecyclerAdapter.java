@@ -10,6 +10,8 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ch.hsr.mge.gadgeothek.R;
 import ch.hsr.mge.gadgeothek.domain.Loan;
 import ch.hsr.mge.gadgeothek.ui.ImageProvider;
@@ -49,10 +51,7 @@ public class LoansRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             return new EmptyRecyclerItemViewHolder(view);
         }
         View layout = layoutInflater.inflate(R.layout.recycler_item, parent, false);
-        TextView nameTextView = (TextView) layout.findViewById(R.id.primaryTextView);
-        TextView returnDateTextView = (TextView) layout.findViewById(R.id.secondaryTextView);
-        ImageView iconImageView = (ImageView) layout.findViewById(R.id.iconImageView);
-        return new RecyclerItemViewHolder(layout, nameTextView, returnDateTextView, iconImageView);
+        return new RecyclerItemViewHolder(layout);
     }
 
     @Override
@@ -74,17 +73,20 @@ public class LoansRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         return Math.max(1, loans.size());
     }
 
-    public static class RecyclerItemViewHolder extends RecyclerView.ViewHolder {
+    static class RecyclerItemViewHolder extends RecyclerView.ViewHolder {
 
-        public final TextView nameTextView;
-        public final TextView returnDateTextView;
-        public final ImageView iconImageView;
+        @BindView(R.id.primaryTextView)
+        TextView nameTextView;
 
-        public RecyclerItemViewHolder(final View parent, TextView nameTextView, TextView returnDateTextView, ImageView iconImageView) {
-            super(parent);
-            this.nameTextView = nameTextView;
-            this.returnDateTextView = returnDateTextView;
-            this.iconImageView = iconImageView;
+        @BindView(R.id.secondaryTextView)
+        TextView returnDateTextView;
+
+        @BindView(R.id.iconImageView)
+        ImageView iconImageView;
+
+        RecyclerItemViewHolder(final View view) {
+            super(view);
+            ButterKnife.bind(this, view);
         }
 
         public boolean isEmptyPlaceholder() {
@@ -92,10 +94,10 @@ public class LoansRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    public static class EmptyRecyclerItemViewHolder extends RecyclerItemViewHolder {
+    private static class EmptyRecyclerItemViewHolder extends RecyclerItemViewHolder {
 
-        public EmptyRecyclerItemViewHolder(View parent) {
-            super(parent, null, null, null);
+        EmptyRecyclerItemViewHolder(View parent) {
+            super(parent);
         }
 
         public boolean isEmptyPlaceholder() {

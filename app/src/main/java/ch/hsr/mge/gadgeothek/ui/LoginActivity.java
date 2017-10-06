@@ -6,30 +6,39 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ch.hsr.mge.gadgeothek.R;
 
 public class LoginActivity extends AbstractAuthenticationActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private EditText emailEditText;
-    private EditText passwordEditText;
-    private View progressView;
-    private View loginFormView;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.email)
+    EditText emailEditText;
+
+    @BindView(R.id.password)
+    EditText passwordEditText;
+
+    @BindView(R.id.login_progress)
+    View progressView;
+
+    @BindView(R.id.login_form)
+    View loginFormView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // Set up the login form.
-        emailEditText = (EditText) findViewById(R.id.email);
-        passwordEditText = (EditText) findViewById(R.id.password);
 
         emailEditText.setText("m@hsr.ch");
         passwordEditText.setText("12345");
@@ -39,16 +48,6 @@ public class LoginActivity extends AbstractAuthenticationActivity {
         String password = preferences.getString(PASSWORD, null);
         emailEditText.setText(email);
         passwordEditText.setText(password);
-
-        findViewById(R.id.signInButton).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
-
-        loginFormView = findViewById(R.id.login_form);
-        progressView = findViewById(R.id.login_progress);
     }
 
     /**
@@ -56,6 +55,7 @@ public class LoginActivity extends AbstractAuthenticationActivity {
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
+    @OnClick(R.id.signInButton)
     public void attemptLogin() {
 
         // Reset errors.
