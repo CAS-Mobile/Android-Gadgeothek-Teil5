@@ -14,10 +14,10 @@ import ch.hsr.mge.gadgeothek.service.LibraryService;
 
 public class RegisterActivity extends AbstractAuthenticationActivity {
 
-    private EditText emailView;
-    private EditText passwordView;
-    private EditText nameView;
-    private EditText matrikelNrView;
+    private EditText emailEditText;
+    private EditText passwordEditText;
+    private EditText nameEditText;
+    private EditText matrikelNrEditText;
     private View progressView;
     private View loginFormView;
 
@@ -30,10 +30,10 @@ public class RegisterActivity extends AbstractAuthenticationActivity {
         setSupportActionBar(toolbar);
 
         // Set up the login form.
-        emailView = (EditText) findViewById(R.id.email);
-        nameView = (EditText) findViewById(R.id.name);
-        matrikelNrView = (EditText) findViewById(R.id.matrikelnr);
-        passwordView = (EditText) findViewById(R.id.password);
+        emailEditText = (EditText) findViewById(R.id.email);
+        nameEditText = (EditText) findViewById(R.id.name);
+        matrikelNrEditText = (EditText) findViewById(R.id.matrikelnr);
+        passwordEditText = (EditText) findViewById(R.id.password);
 
         ((Button) findViewById(R.id.registerButton)).setOnClickListener(new OnClickListener() {
             @Override
@@ -54,45 +54,45 @@ public class RegisterActivity extends AbstractAuthenticationActivity {
     public void attemptLogin() {
 
         // Reset errors.
-        emailView.setError(null);
-        passwordView.setError(null);
-        nameView.setError(null);
-        matrikelNrView.setError(null);
+        emailEditText.setError(null);
+        passwordEditText.setError(null);
+        nameEditText.setError(null);
+        matrikelNrEditText.setError(null);
 
         // Store values at the time of the login attempt.
-        final String email = emailView.getText().toString();
-        final String password = passwordView.getText().toString();
-        String name = nameView.getText().toString();
-        String matrikelNr = matrikelNrView.getText().toString();
+        final String email = emailEditText.getText().toString();
+        final String password = passwordEditText.getText().toString();
+        String name = nameEditText.getText().toString();
+        String matrikelNr = matrikelNrEditText.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
-            passwordView.setError(getString(R.string.error_field_required));
-            focusView = passwordView;
+            passwordEditText.setError(getString(R.string.error_field_required));
+            focusView = passwordEditText;
             cancel = true;
         }
 
         // Check for a valid matrikel number
         if (TextUtils.isEmpty(matrikelNr)) {
-            matrikelNrView.setError(getString(R.string.error_field_required));
-            focusView = matrikelNrView;
+            matrikelNrEditText.setError(getString(R.string.error_field_required));
+            focusView = matrikelNrEditText;
             cancel = true;
         }
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            emailView.setError(getString(R.string.error_field_required));
-            focusView = emailView;
+            emailEditText.setError(getString(R.string.error_field_required));
+            focusView = emailEditText;
             cancel = true;
         }
 
         // Check for a valid name
         if (TextUtils.isEmpty(name)) {
-            nameView.setError(getString(R.string.error_field_required));
-            focusView = nameView;
+            nameEditText.setError(getString(R.string.error_field_required));
+            focusView = nameEditText;
             cancel = true;
         }
 
@@ -120,8 +120,8 @@ public class RegisterActivity extends AbstractAuthenticationActivity {
                             }
                         });
                     } else {
-                        passwordView.setError(getString(R.string.error_incorrect_password));
-                        passwordView.requestFocus();
+                        passwordEditText.setError(getString(R.string.error_incorrect_password));
+                        passwordEditText.requestFocus();
                     }
                 }
 

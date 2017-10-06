@@ -14,8 +14,8 @@ import ch.hsr.mge.gadgeothek.R;
 public class LoginActivity extends AbstractAuthenticationActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private EditText emailView;
-    private EditText passwordView;
+    private EditText emailEditText;
+    private EditText passwordEditText;
     private View progressView;
     private View loginFormView;
 
@@ -28,17 +28,17 @@ public class LoginActivity extends AbstractAuthenticationActivity {
         setSupportActionBar(toolbar);
 
         // Set up the login form.
-        emailView = (EditText) findViewById(R.id.email);
-        passwordView = (EditText) findViewById(R.id.password);
+        emailEditText = (EditText) findViewById(R.id.email);
+        passwordEditText = (EditText) findViewById(R.id.password);
 
-        emailView.setText("m@hsr.ch");
-        passwordView.setText("12345");
+        emailEditText.setText("m@hsr.ch");
+        passwordEditText.setText("12345");
 
         SharedPreferences preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         String email = preferences.getString(EMAIL, null);
         String password = preferences.getString(PASSWORD, null);
-        emailView.setText(email);
-        passwordView.setText(password);
+        emailEditText.setText(email);
+        passwordEditText.setText(password);
 
         findViewById(R.id.signInButton).setOnClickListener(new OnClickListener() {
             @Override
@@ -59,27 +59,27 @@ public class LoginActivity extends AbstractAuthenticationActivity {
     public void attemptLogin() {
 
         // Reset errors.
-        emailView.setError(null);
-        passwordView.setError(null);
+        emailEditText.setError(null);
+        passwordEditText.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = emailView.getText().toString();
-        String password = passwordView.getText().toString();
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password
         if (TextUtils.isEmpty(password)) {
-            passwordView.setError(getString(R.string.error_field_required));
-            focusView = passwordView;
+            passwordEditText.setError(getString(R.string.error_field_required));
+            focusView = passwordEditText;
             cancel = true;
         }
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            emailView.setError(getString(R.string.error_field_required));
-            focusView = emailView;
+            emailEditText.setError(getString(R.string.error_field_required));
+            focusView = emailEditText;
             cancel = true;
         }
 
