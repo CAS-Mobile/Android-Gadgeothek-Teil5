@@ -2,7 +2,6 @@ package ch.hsr.mge.gadgeothek.ui.loans;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,29 +15,18 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import ch.hsr.mge.gadgeothek.R;
 import ch.hsr.mge.gadgeothek.domain.Loan;
-import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 import ch.hsr.mge.gadgeothek.ui.GadgeothekActivity;
 
 public class LoansFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    @Inject
-    LibraryService libraryService;
     private ArrayList<Loan> loans = new ArrayList<>();
     private SwipeRefreshLayout refreshLayout;
     private LoansRecyclerAdapter loansRecyclerAdapter;
     private RecyclerView recyclerView;
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ((GadgeothekApplication) getActivity().getApplication()).getComponent().inject(this);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +44,7 @@ public class LoansFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onStart() {
         super.onStart();
 
-        if (libraryService.isLoggedIn()) {
+        if (LibraryService.isLoggedIn()) {
             refreshLoans();
         } else {
             snack("You are not logged in!?");
@@ -69,7 +57,7 @@ public class LoansFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private void refreshLoans() {
         refreshLayout.setRefreshing(true);
-        libraryService.getLoansForCustomer(new Callback<List<Loan>>() {
+        LibraryService.getLoansForCustomer(new Callback<List<Loan>>() {
             @Override
             public void onCompletion(List<Loan> newLoans) {
                 setupAdapter();

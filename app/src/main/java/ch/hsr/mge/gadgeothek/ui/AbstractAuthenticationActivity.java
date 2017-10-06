@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -13,28 +12,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import javax.inject.Inject;
-
 import ch.hsr.mge.gadgeothek.R;
-import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 
 
 public class AbstractAuthenticationActivity extends AppCompatActivity {
 
-    @Inject
-    LibraryService libraryService;
     public static final String PREFERENCES = "PREFERENCES";
     public static final String EMAIL = "EMAIL";
     public static final String PASSWORD = "PASSWORD";
     public static final String LAST_AUTOLOGIN_FAILED = "LAST_AUTOLOGIN_FAILED";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ((GadgeothekApplication) getApplication()).getComponent().inject(this);
-    }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.gadgeothek, menu);
@@ -105,9 +93,9 @@ public class AbstractAuthenticationActivity extends AppCompatActivity {
                 getString(R.string.settings_server_address),
                 getString(R.string.settings_default_server));
 
-        libraryService.setServerAddress(url);
+        LibraryService.setServerAddress(url);
 
-        libraryService.login(email, password, new Callback<Boolean>() {
+        LibraryService.login(email, password, new Callback<Boolean>() {
             @Override
             public void onCompletion(Boolean success) {
                 SharedPreferences preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);

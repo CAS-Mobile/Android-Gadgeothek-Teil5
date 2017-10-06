@@ -18,10 +18,7 @@ import android.view.View;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import javax.inject.Inject;
-
 import ch.hsr.mge.gadgeothek.R;
-import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 import ch.hsr.mge.gadgeothek.ui.loans.LoansFragment;
@@ -31,8 +28,6 @@ import ch.hsr.mge.gadgeothek.ui.reservations.ReservationsFragment;
 public class GadgeothekActivity extends AppCompatActivity {
 
     private static final String ACTIVE_TAB = GadgeothekActivity.class.getCanonicalName() + ".ACTIVE_TAB";
-    @Inject
-    LibraryService libraryService;
     private Toolbar toolbar;
     private FloatingActionButton fab;
     private ViewPager viewPager;
@@ -50,8 +45,6 @@ public class GadgeothekActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gadgeothek);
-
-        ((GadgeothekApplication) getApplication()).getComponent().inject(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -108,14 +101,14 @@ public class GadgeothekActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                libraryService.logout(new Callback<Boolean>() {
+                LibraryService.logout(new Callback<Boolean>() {
                     @Override
                     public void onCompletion(Boolean input) {
                         SharedPreferences preferences = getSharedPreferences(AbstractAuthenticationActivity.PREFERENCES, MODE_PRIVATE);
                         SharedPreferences.Editor editor = preferences.edit();
                         // disable auto-login for the next time
                         editor.putBoolean(AbstractAuthenticationActivity.LAST_AUTOLOGIN_FAILED, true);
-                        editor.apply();
+                        editor.commit();
                         Intent intent = new Intent(GadgeothekActivity.this, LoginActivity.class);
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_left_to_right, R.anim.slide_out_left_to_right);

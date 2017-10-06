@@ -8,17 +8,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import javax.inject.Inject;
-
 import ch.hsr.mge.gadgeothek.R;
-import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 
 public class RegisterActivity extends AbstractAuthenticationActivity {
 
-    @Inject
-    LibraryService libraryService;
     private EditText emailView;
     private EditText passwordView;
     private EditText nameView;
@@ -30,7 +25,6 @@ public class RegisterActivity extends AbstractAuthenticationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        ((GadgeothekApplication) getApplication()).getComponent().inject(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -108,12 +102,12 @@ public class RegisterActivity extends AbstractAuthenticationActivity {
             showProgress(loginFormView, progressView, true);
             hideSoftKeyboard(loginFormView);
 
-            libraryService.register(email, password, name, matrikelNr, new Callback<Boolean>() {
+            LibraryService.register(email, password, name, matrikelNr, new Callback<Boolean>() {
                 @Override
                 public void onCompletion(Boolean success) {
                     showProgress(loginFormView, progressView, false);
                     if (success) {
-                        libraryService.login(email, password, new Callback<Boolean>() {
+                        LibraryService.login(email, password, new Callback<Boolean>() {
                             @Override
                             public void onCompletion(Boolean success) {
                                 startMainActivity(/* isAutoLogin = */false);

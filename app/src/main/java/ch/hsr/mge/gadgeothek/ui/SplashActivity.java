@@ -10,16 +10,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 
-import javax.inject.Inject;
-
 import ch.hsr.mge.gadgeothek.R;
-import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 
 public class SplashActivity extends AbstractAuthenticationActivity {
-
-    @Inject
-    LibraryService libraryService;
     private View progressView;
 
     @Override
@@ -27,7 +21,6 @@ public class SplashActivity extends AbstractAuthenticationActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        ((GadgeothekApplication) getApplication()).getComponent().inject(this);
         progressView = findViewById(R.id.login_progress);
     }
     
@@ -42,7 +35,7 @@ public class SplashActivity extends AbstractAuthenticationActivity {
                 getString(R.string.settings_server_address),
                 getString(R.string.settings_default_server));
 
-        libraryService.setServerAddress(url);
+        LibraryService.setServerAddress(url);
 
         progressView.setVisibility(View.VISIBLE);
         progressView
@@ -56,7 +49,7 @@ public class SplashActivity extends AbstractAuthenticationActivity {
                     }
                 });
 
-        if (!libraryService.isLoggedIn() && !lastAutologinAttemptFailed) {
+        if (!LibraryService.isLoggedIn() && !lastAutologinAttemptFailed) {
             String email = preferences.getString(EMAIL, null);
             String password = preferences.getString(PASSWORD, null);
             if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {

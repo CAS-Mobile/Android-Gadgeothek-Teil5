@@ -8,23 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import javax.inject.Inject;
-
 import ch.hsr.mge.gadgeothek.R;
-import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    @Inject
-    LibraryService libraryService;
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_settings);
-        ((GadgeothekApplication) getApplication()).getComponent().inject(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -48,7 +43,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             editor.putString(key, address);
             editor.commit();
 
-            libraryService.setServerAddress(address);
+            LibraryService.setServerAddress(address);
         }
     }
 

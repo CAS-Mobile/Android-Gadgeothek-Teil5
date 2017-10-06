@@ -105,7 +105,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="okio-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-26.0.0-alpha1" level="project" />
-    <orderEntry type="library" exported="" name="dagger-2.11" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="support-fragment-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="transition-26.0.0-alpha1" level="project" />
@@ -114,10 +113,8 @@
     <orderEntry type="library" exported="" name="support-v4-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="support-media-compat-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.7" level="project" />
-    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="okhttp-3.4.1" level="project" />
-    <orderEntry type="library" exported="" name="jsr250-api-1.0" level="project" />
     <orderEntry type="library" exported="" name="design-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="support-compat-26.0.0-alpha1" level="project" />

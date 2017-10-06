@@ -2,7 +2,6 @@ package ch.hsr.mge.gadgeothek.ui.reservations;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -21,19 +20,14 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import ch.hsr.mge.gadgeothek.R;
 import ch.hsr.mge.gadgeothek.domain.Reservation;
-import ch.hsr.mge.gadgeothek.modules.GadgeothekApplication;
 import ch.hsr.mge.gadgeothek.service.Callback;
 import ch.hsr.mge.gadgeothek.service.LibraryService;
 import ch.hsr.mge.gadgeothek.ui.GadgeothekActivity;
 
 public class ReservationsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    @Inject
-    LibraryService libraryService;
     private static final String TAG = ReservationsFragment.class.getSimpleName();
     private ArrayList<Reservation> reservations = new ArrayList<>();
     private SwipeRefreshLayout refreshLayout;
@@ -41,17 +35,11 @@ public class ReservationsFragment extends Fragment implements SwipeRefreshLayout
     private RecyclerView recyclerView;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ((GadgeothekApplication) getActivity().getApplication()).getComponent().inject(this);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.reservations_fragment, container, false);
-        recyclerView = fragment.findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) fragment.findViewById(R.id.recyclerView);
 
-        refreshLayout = fragment.findViewById(R.id.swipeLayout);
+        refreshLayout = (SwipeRefreshLayout) fragment.findViewById(R.id.swipeLayout);
         refreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW);
         refreshLayout.setOnRefreshListener(this);
 
@@ -62,7 +50,7 @@ public class ReservationsFragment extends Fragment implements SwipeRefreshLayout
     public void onStart() {
         super.onStart();
 
-        if (libraryService.isLoggedIn()) {
+        if (LibraryService.isLoggedIn()) {
             refreshReservations();
         } else {
             snack("You are not logged in!?");
@@ -75,7 +63,7 @@ public class ReservationsFragment extends Fragment implements SwipeRefreshLayout
     }
 
     private void refreshReservations() {
-        libraryService.getReservationsForCustomer(new Callback<List<Reservation>>() {
+        LibraryService.getReservationsForCustomer(new Callback<List<Reservation>>() {
             @Override
             public void onCompletion(List<Reservation> newReservations) {
                 setupAdapter();
@@ -153,7 +141,7 @@ public class ReservationsFragment extends Fragment implements SwipeRefreshLayout
 
 
     private void cancelReservation(final Reservation reservation, final int position) {
-        libraryService.deleteReservation(reservation, new Callback<Boolean>() {
+        LibraryService.deleteReservation(reservation, new Callback<Boolean>() {
             @Override
             public void onCompletion(Boolean input) {
                 reservations.remove(position);
