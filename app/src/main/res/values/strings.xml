@@ -21,7 +21,7 @@
     <string name="action_logout">Logout</string>
     <string name="action_settings">Settings</string>
     <string name="settings_server_address">server_address</string>
-    <string name="settings_default_server">http://10.0.2.2/public</string>
+    <string name="settings_default_server">http://mge1.dev.ifs.hsr.ch/public</string>
     <string name="title_activity_settings">Settings</string>
     <string name="cancel_reservation">Cancel Reservation</string>
     <string name="action_cancel_reservation">Cancel Reservation</string>
